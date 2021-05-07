@@ -20,7 +20,7 @@ cryptos = [
 	{
 		name: 'safemoon',
 		ticker: 'safe',
-		url: 'https://api.cryptorank.io/v0/coins/ethereum-classic?locale=en',
+		url: 'https://api.cryptorank.io/v0/coins/safemoon/tickers',
 		quantity: 0,
 	},
 	{
@@ -66,7 +66,15 @@ function format(number) {
 
 async function getPrice(url) {
 	let data = await axios(url);
-	data = data.data.data.price.USD;
+	try {
+		data = data.data.data.price.USD;
+		
+	} catch (error) {
+		data = data.data.data;
+		let index = data.findIndex((v) => v.exchangeName == 'Pancake Swap');
+		index = index < 0 ? 0 : index;
+		data = data[index].usdLast;
+	}
 	return data;
 }
 

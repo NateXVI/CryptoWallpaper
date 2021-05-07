@@ -1,6 +1,13 @@
-const dogecoin = 18638;
-const ethereumClassic = 60.0148;
-const safemoon = 168000000;
+
+let dogecoin = 1;
+let ethereum = 1;
+let ethereumClassic = 1;
+let safemoon = 1;
+
+let queryString = window.location.search;
+const urlParams = new URLSearchParams(queryString);
+
+
 
 updatePage();
 setInterval(updatePage, 60000);
@@ -8,17 +15,20 @@ setInterval(updatePage, 60000);
 async function updatePage() {
 	const page = {
 		doge: $('#dogecoin'),
+		eth: $('#ethereum'),
 		etc: $('#ethereum-classic'),
 		safe: $('#safemoon'),
 		total: $('#total'),
 	};
-	const d = (await getDoge()) * dogecoin;
-	const e = (await getEthereumClassic()) * ethereumClassic;
-	const s = (await getSafemoon()) * safemoon;
+	const d = dogecoin == 0 ? 0 : (await getDoge()) * dogecoin;
+	const e = ethereum == 0 ? 0: (await getEthereum()) * ethereum;
+	const ec = ethereumClassic == 0 ? 0: (await getEthereumClassic()) * ethereumClassic;
+	const s = safemoon == 0 ? 0 : (await getSafemoon()) * safemoon;
 	page.doge.text(format(d));
-	page.etc.text(format(e));
+	page.eth.text(format(e));
+	page.etc.text(format(ec));
 	page.safe.text(format(s));
-	page.total.text(format(d + e + s));
+	page.total.text(format(d + e + ec + s));
 
 	console.log('updated');
 }
@@ -37,10 +47,18 @@ async function getDoge() {
 	data = data.data.data.price.USD;
 	return data;
 }
-// url: 'https://api.cryptorank.io/v0/token/ethereum-classic?locale=en',
+
 async function getEthereumClassic() {
 	let data = await axios({
 		url: 'https://api.cryptorank.io/v0/coins/ethereum-classic?locale=en',
+	});
+	data = data.data.data.price.USD;
+	return data;
+}
+
+async function getEthereum() {
+	let data = await axios({
+		url: 'https://api.cryptorank.io/v0/coins/ethereum?locale=en',
 	});
 	data = data.data.data.price.USD;
 	return data;
@@ -54,3 +72,22 @@ async function getSafemoon() {
 	data = data[index].usdLast;
 	return data;
 }
+
+function setQuantity(s) {
+	let q = urlParams.get(s);
+	console.log(q);
+	if (q == null || Number(q) == NaN) {
+		console.log(`${s} hidden`)
+		$(`#${s}`).hide();
+		return 0;
+	}
+	console.log(Number(q))
+	if (Number(q) == NaN) return 1;
+
+	return q
+}
+
+dogecoin = setQuantity('d');
+ethereum = setQuantity('e');
+ethereumClassic = setQuantity('ec');
+safemoon = setQuantity('s');

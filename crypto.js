@@ -1,34 +1,58 @@
-
-let dogecoin = 1;
-let ethereum = 1;
-let ethereumClassic = 1;
-let safemoon = 1;
+cryptos = [
+	{
+		name: 'dogecoin',
+		ticker: 'doge',
+		url: 'https://api.cryptorank.io/v0/coins/dogecoin?locale=en',
+		quantity: 0,
+	},
+	{
+		name: 'ethereum',
+		ticker: 'eth',
+		url: 'https://api.cryptorank.io/v0/coins/ethereum?locale=en',
+		quantity: 0,
+	},
+	{
+		name: 'ethereum-classic',
+		ticker: 'etc',
+		url: 'https://api.cryptorank.io/v0/coins/ethereum-classic?locale=en',
+		quantity: 0,
+	},
+	{
+		name: 'safemoon',
+		ticker: 'safe',
+		url: 'https://api.cryptorank.io/v0/coins/ethereum-classic?locale=en',
+		quantity: 0,
+	},
+	{
+		name: 'binance-coin',
+		ticker: 'bnb',
+		url: 'https://api.cryptorank.io/v0/coins/binance-coin?locale=en',
+		quantity: 0,
+	},
+]
 
 let queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 
 
-
+setQuantity();
 updatePage();
 setInterval(updatePage, 60000);
 
 async function updatePage() {
-	const page = {
-		doge: $('#dogecoin'),
-		eth: $('#ethereum'),
-		etc: $('#ethereum-classic'),
-		safe: $('#safemoon'),
-		total: $('#total'),
-	};
-	const d = dogecoin == 0 ? 0 : (await getDoge()) * dogecoin;
-	const e = ethereum == 0 ? 0: (await getEthereum()) * ethereum;
-	const ec = ethereumClassic == 0 ? 0: (await getEthereumClassic()) * ethereumClassic;
-	const s = safemoon == 0 ? 0 : (await getSafemoon()) * safemoon;
-	page.doge.text(format(d));
-	page.eth.text(format(e));
-	page.etc.text(format(ec));
-	page.safe.text(format(s));
-	page.total.text(format(d + e + ec + s));
+	let total = 0;
+
+	for (let i in cryptos) {
+		const e = cryptos[i];
+		const p = $(`#${e.name}`);
+		const price = e.quantity == 0 ? 0: await getPrice(e.url);
+		const value = price * e.quantity;
+		total += value;
+		p.text(format(value))
+		
+	}
+
+	$('#total').text(format(total));
 
 	console.log('updated');
 }
@@ -40,29 +64,12 @@ function format(number) {
 	return number;
 }
 
-async function getDoge() {
-	let data = await axios({
-		url: 'https://api.cryptorank.io/v0/coins/dogecoin?locale=en',
-	});
+async function getPrice(url) {
+	let data = await axios(url);
 	data = data.data.data.price.USD;
 	return data;
 }
 
-async function getEthereumClassic() {
-	let data = await axios({
-		url: 'https://api.cryptorank.io/v0/coins/ethereum-classic?locale=en',
-	});
-	data = data.data.data.price.USD;
-	return data;
-}
-
-async function getEthereum() {
-	let data = await axios({
-		url: 'https://api.cryptorank.io/v0/coins/ethereum?locale=en',
-	});
-	data = data.data.data.price.USD;
-	return data;
-}
 
 async function getSafemoon() {
 	let data = await axios('https://api.cryptorank.io/v0/coins/safemoon/tickers');
@@ -73,21 +80,14 @@ async function getSafemoon() {
 	return data;
 }
 
-function setQuantity(s) {
-	let q = urlParams.get(s);
-	console.log(q);
-	if (q == null || Number(q) == NaN) {
-		console.log(`${s} hidden`)
-		$(`#${s}`).hide();
-		return 0;
+function setQuantity() {
+	for (let i in cryptos) {
+		const val = urlParams.get(cryptos[i].ticker);
+		if (val == null || Number(val) == NaN) {
+			$(`#${cryptos[i].ticker}`).hide();
+		} else {
+			cryptos[i].quantity = val
+		}
+		
 	}
-	console.log(Number(q))
-	if (Number(q) == NaN) return 1;
-
-	return q
 }
-
-dogecoin = setQuantity('d');
-ethereum = setQuantity('e');
-ethereumClassic = setQuantity('ec');
-safemoon = setQuantity('s');

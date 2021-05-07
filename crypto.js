@@ -18,6 +18,12 @@ cryptos = [
 		quantity: 0,
 	},
 	{
+		name: 'bitcoin',
+		ticker: 'btc',
+		url: 'https://api.cryptorank.io/v0/coins/bitcoin?locale=en',
+		quantity: 0,
+	},
+	{
 		name: 'safemoon',
 		ticker: 'safe',
 		url: 'https://api.cryptorank.io/v0/coins/safemoon/tickers',
@@ -29,11 +35,10 @@ cryptos = [
 		url: 'https://api.cryptorank.io/v0/coins/binance-coin?locale=en',
 		quantity: 0,
 	},
-]
+];
 
 let queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
-
 
 setQuantity();
 updatePage();
@@ -45,11 +50,10 @@ async function updatePage() {
 	for (let i in cryptos) {
 		const e = cryptos[i];
 		const p = $(`#${e.name}`);
-		const price = e.quantity == 0 ? 0: await getPrice(e.url);
+		const price = e.quantity == 0 ? 0 : await getPrice(e.url);
 		const value = price * e.quantity;
 		total += value;
-		p.text(format(value))
-		
+		p.text(format(value));
 	}
 
 	$('#total').text(format(total));
@@ -68,7 +72,6 @@ async function getPrice(url) {
 	let data = await axios(url);
 	try {
 		data = data.data.data.price.USD;
-		
 	} catch (error) {
 		data = data.data.data;
 		let index = data.findIndex((v) => v.exchangeName == 'Pancake Swap');
@@ -77,7 +80,6 @@ async function getPrice(url) {
 	}
 	return data;
 }
-
 
 async function getSafemoon() {
 	let data = await axios('https://api.cryptorank.io/v0/coins/safemoon/tickers');
@@ -94,8 +96,7 @@ function setQuantity() {
 		if (val == null || Number(val) == NaN) {
 			$(`#${cryptos[i].ticker}`).hide();
 		} else {
-			cryptos[i].quantity = val
+			cryptos[i].quantity = val;
 		}
-		
 	}
 }

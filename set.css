@@ -31,6 +31,7 @@ html {
 h3 {
     padding-right:0.5em;
     padding-top: 1em;
+    color: red;
 }
 
 input {
@@ -51,3 +52,4 @@ button {
 button:hover {
     background: #ff4444
 }
+

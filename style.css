@@ -30,3 +30,19 @@ html {
 h3 {
 	color: red;
 }
+
+#hidden-btn {
+	position: fixed;
+	left: 0;
+	bottom: 0;
+
+	padding: 2em;
+
+	background: black;
+	color: black;
+}
+
+#hidden-btn:hover {
+	background: #111;
+	color: #515151
+}

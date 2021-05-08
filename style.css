@@ -26,3 +26,7 @@ html {
 	display: flex;
 	justify-content: space-between;
 }
+
+h3 {
+	color: red;
+}

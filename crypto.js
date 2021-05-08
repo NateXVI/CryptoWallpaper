@@ -30,9 +30,21 @@ cryptos = [
 		quantity: 0,
 	},
 	{
+		name: 'uniswap',
+		ticker: 'uni',
+		url: 'https://api.cryptorank.io/v0/coins/uniswap/tickers',
+		quantity: 0,
+	},
+	{
 		name: 'binance-coin',
 		ticker: 'bnb',
 		url: 'https://api.cryptorank.io/v0/coins/binance-coin?locale=en',
+		quantity: 0,
+	},
+	{
+		name: 'dollar',
+		ticker: 'usd',
+		url: 1,
 		quantity: 0,
 	},
 ];
@@ -69,6 +81,7 @@ function format(number) {
 }
 
 async function getPrice(url) {
+	if (!isNaN(url)) return url;
 	let data = await axios(url);
 	try {
 		data = data.data.data.price.USD;
@@ -77,6 +90,7 @@ async function getPrice(url) {
 		let index = data.findIndex((v) => v.exchangeName == 'Pancake Swap');
 		index = index < 0 ? 0 : index;
 		data = data[index].usdLast;
+		console.log(data);
 	}
 	return data;
 }

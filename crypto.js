@@ -1,4 +1,4 @@
-cryptos = [
+let cryptos = [
 	{
 		name: 'dogecoin',
 		ticker: 'doge',
@@ -42,6 +42,12 @@ cryptos = [
 		quantity: 0,
 	},
 	{
+		name: 'shiba-inu',
+		ticker: 'shib',
+		url: 'https://api.cryptorank.io/v0/coins/shiba-inu/tickers',
+		quantity: 0,
+	},
+	{
 		name: 'dollar',
 		ticker: 'usd',
 		url: 1,
@@ -79,6 +85,8 @@ function format(number) {
 	number = '$' + number;
 	return number;
 }
+
+async function getTokenPrice(name) {}
 
 async function getPrice(url) {
 	if (!isNaN(url)) return url;
